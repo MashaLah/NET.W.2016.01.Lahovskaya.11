@@ -92,7 +92,7 @@ namespace Task2
 
         private class QueueEnumerator : IEnumerator<T>
         {
-            private Queue<T> queue;
+            private readonly Queue<T> queue;
             private int index;
 
             public QueueEnumerator(Queue<T> queue)
@@ -105,7 +105,7 @@ namespace Task2
             /// Gets the element in the collection at the current position of the enumerator.
             /// </summary>
             /// <exception cref="InvalidOperationException">
-            /// Throws if index is out of size.
+            /// Throws if index is out of range.
             /// </exception>
             public T Current
             {
