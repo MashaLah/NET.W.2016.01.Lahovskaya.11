@@ -111,7 +111,7 @@ namespace Task2
             {
                 get
                 {
-                    if (index == -1 || index == queue.size)
+                    if (index < queue.head || index >= queue.tail)
                     {
                         throw new InvalidOperationException();
                     }
@@ -126,7 +126,7 @@ namespace Task2
             /// </summary>
             /// <returns>False if current the enumerator is positioned 
             /// after the last element in the collection.</returns>
-            public bool MoveNext() => ++index < queue.size;
+            public bool MoveNext() => ++index < queue.tail;
 
             void IEnumerator.Reset() { throw new NotSupportedException(); }
 
