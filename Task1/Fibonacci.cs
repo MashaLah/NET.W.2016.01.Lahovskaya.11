@@ -19,7 +19,7 @@ namespace Task1
         public static IEnumerable<int> GenerateFibonacciNumbers(int n)
         {
             if (n < 2) throw new ArgumentOutOfRangeException(nameof(n));
-            int previous = 0;
+            /*int previous = 0;
             int current = 1;
             yield return previous;
             yield return current;
@@ -29,6 +29,16 @@ namespace Task1
                 yield return next = previous + current;
                 previous = current;
                 current = next;
+            }*/
+            int previous = 0, current = 1;
+            int i = 0;
+            while (i < n)
+            {
+                yield return previous;
+                int next = previous + current;
+                previous = current;
+                current = next;
+                i++;
             }
         }
     }

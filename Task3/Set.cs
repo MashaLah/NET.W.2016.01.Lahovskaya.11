@@ -10,13 +10,18 @@ namespace Task3
     public class Set<T> : IEnumerable<T> where T : class, IComparable<T>
     {
         private T[] elements;
+        private int capacity;
+        private int defaultCapacity = 10;
+        private int size;
 
         /// <summary>
         /// Initializes a new instance of the Set class that is empty.
         /// </summary>
         public Set()
         {
-            elements = new T[0];
+            elements = new T[defaultCapacity];
+            capacity = defaultCapacity;
+            size = 0;
         }
 
         /// <summary>
@@ -24,7 +29,7 @@ namespace Task3
         /// collection
         /// </summary>
         /// <param name="array"></param>
-        public Set(params T[] array)
+        public Set(IEnumerable<T> array):this()
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
             foreach (T element in array)
@@ -47,6 +52,7 @@ namespace Task3
         /// <param name="x">Item to add.</param>
         public void Add(T x)
         {
+            if (x == null) throw new ArgumentNullException(nameof(x));
             if (Contains(x)) throw new ArgumentException($"Element {x} already exists");
             AddItem(x);
         }
@@ -74,16 +80,17 @@ namespace Task3
         /// Throws when input parameter is null.
         /// </exception>
         /// <returns>All elements that are present in set, input set, or both</returns>
-        public Set<T> Union(Set<T> other)
+        public IEnumerable<T> UnionCustom(Set<T> other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other)); 
-            Set<T> result = new Set<T>(elements);
-            foreach (T element in other)
+            //Set<T> result = new Set<T>(elements);
+            /*foreach (T element in other)
             {
                 if(!result.Contains(element))
                     result.AddItem(element);
-            }
-            return result;   
+            }*/
+            return this.Union(other);
+            //return result;   
         }
 
         /// <summary>
@@ -95,16 +102,17 @@ namespace Task3
         /// Throws when input parameter is null.
         /// </exception>
         /// <returns>Elements that are present in set and in input set</returns>
-        public Set<T> Intersect(Set<T> other)
+        public IEnumerable<T> IntersectCustom(Set<T> other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
-            Set<T> result = new Set<T>();
-            foreach (T element in other)
+            //Set<T> result = new Set<T>();
+            /*foreach (T element in other)
             {
                 if (Contains(element))
                     result.AddItem(element);
-            }
-            return result;
+            }*/
+            return this.Intersect(other);
+            //return result;
         }
 
         /// <summary>
@@ -115,39 +123,48 @@ namespace Task3
         /// Throws when input parameter is null.
         /// </exception>
         /// <returns>Set without elements in input set.</returns>
-        public Set<T> Except(Set<T> other)
+        public IEnumerable<T> ExceptCustom(Set<T> other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
-            Set<T> result = new Set<T>(elements);
-            foreach (T element in other)
+            //Set<T> result = new Set<T>(elements);
+            /*foreach (T element in other)
             {
                 if (Contains(element))
                     result.RemoveItem(element);
-            }
-            return result;
+            }*/
+            //result.Except(other);
+            return this.Except(other);
         }
 
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < elements.Length; i++)
-                yield return elements[i];
+            {
+                if (elements[i] != default(T))
+                    yield return elements[i];
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private void AddItem(T x)
         {
-            Array.Resize(ref elements, elements.Length + 1);
-            elements[elements.Length - 1] = x;
+            if (size == capacity)
+            {
+                capacity += defaultCapacity;
+                Array.Resize(ref elements, capacity);
+            }
+            elements[size] = x;
+            size++;
         }
 
         private void RemoveItem(T x)
         {
-            for (int i = Array.IndexOf(elements, x); i < elements.Length; i++)
+            for (int i = Array.IndexOf(elements, x); i < size; i++)
             {
                 elements[i] = elements[i + 1];
             }
-            Array.Resize(ref elements, elements.Length - 1);
+            size--;
         }
     }
 }

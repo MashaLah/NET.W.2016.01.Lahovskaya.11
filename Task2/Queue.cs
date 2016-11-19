@@ -28,6 +28,14 @@ namespace Task2
             capacity = defaultCapacity;
             size = 0;
         }
+
+        public Queue(IEnumerable<T> array) :this()
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            foreach (T element in array)
+                Enqueue(element);
+        }
+
         /// <summary>
         /// Adds an object to the end of the Queue<T>.
         /// </summary>
@@ -36,13 +44,25 @@ namespace Task2
         {
             if (size == capacity)
             {
-                T[] nextQueue = new T[2 * capacity];
-                Array.Copy(elements, 0, nextQueue, 0, elements.Length);
+                T[] nextQueue = new T[capacity + defaultCapacity];
+                if (head < tail)
+                    Array.Copy(elements, head, nextQueue, 0, size);
+                else
+                {
+                    Array.Copy(elements, head, nextQueue, 0, capacity - head);
+                    Array.Copy(elements, 0, nextQueue, capacity - head, tail);
+                }
                 elements = nextQueue;
-                capacity *= 2;
+                head = 0;
+                tail = size;
+                capacity += defaultCapacity;
             }
             size++;
-            elements[tail++] = element;
+            elements[tail] = element;
+            if (size == capacity && tail == capacity - 1)
+                tail++;
+            else
+                tail = ++tail % capacity;
         }
 
         /// <summary>
@@ -57,9 +77,12 @@ namespace Task2
             if (size == 0)
                 throw new InvalidOperationException($"Can't dequeue because the queue is empty.");
             T element = elements[head];
-            elements[head++] = default(T);
+            elements[head] = default(T);
+            head = ++head % capacity;
             size--;
+            if (tail == capacity) tail = 0; 
             return element;
+            //return elements[++head % capacity];
         }
 
         /// <summary>
@@ -85,20 +108,20 @@ namespace Task2
             return new QueueEnumerator(this);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        
 
         private class QueueEnumerator : IEnumerator<T>
         {
             private readonly Queue<T> queue;
             private int index;
+            private int count;
 
             public QueueEnumerator(Queue<T> queue)
             {
                 this.queue = queue;
-                index = -1;
+                index = queue.head - 1;
+                count = 0;
             }
 
             /// <summary>
@@ -111,10 +134,6 @@ namespace Task2
             {
                 get
                 {
-                    if (index < queue.head || index >= queue.tail)
-                    {
-                        throw new InvalidOperationException();
-                    }
                     return queue.elements[index];
                 }
             }
@@ -126,11 +145,19 @@ namespace Task2
             /// </summary>
             /// <returns>False if current the enumerator is positioned 
             /// after the last element in the collection.</returns>
-            public bool MoveNext() => ++index < queue.tail;
+            public bool MoveNext()
+            {
+                index++;
+                count++;
+                if (count > queue.size) return false;
+                if (index == queue.capacity && queue.head >= queue.tail) index = 0;
+                if (queue.head >= queue.tail) return index < queue.capacity;
+                return index < queue.tail;
+            }
 
-            void IEnumerator.Reset() { throw new NotSupportedException(); }
+            void IEnumerator.Reset() { }
 
-            void IDisposable.Dispose() { throw new NotSupportedException(); }
+            void IDisposable.Dispose() { }
         }
     }
 }

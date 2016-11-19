@@ -21,9 +21,15 @@ namespace Task1Tests
 
         [TestCase(-5)]
         [TestCase(0)]
+        [TestCase(1)]
         public void GenerateFibonacciNumbers_InvalidData_ThrowException(int n)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => GenerateFibonacciNumbers(n));
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                foreach (int i in GenerateFibonacciNumbers(n))
+                {
+                    
+                }
+            });
         }
     }
 }
