@@ -83,14 +83,7 @@ namespace Task3
         public IEnumerable<T> UnionCustom(Set<T> other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other)); 
-            //Set<T> result = new Set<T>(elements);
-            /*foreach (T element in other)
-            {
-                if(!result.Contains(element))
-                    result.AddItem(element);
-            }*/
             return this.Union(other);
-            //return result;   
         }
 
         /// <summary>
@@ -105,14 +98,7 @@ namespace Task3
         public IEnumerable<T> IntersectCustom(Set<T> other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
-            //Set<T> result = new Set<T>();
-            /*foreach (T element in other)
-            {
-                if (Contains(element))
-                    result.AddItem(element);
-            }*/
             return this.Intersect(other);
-            //return result;
         }
 
         /// <summary>
@@ -126,13 +112,6 @@ namespace Task3
         public IEnumerable<T> ExceptCustom(Set<T> other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
-            //Set<T> result = new Set<T>(elements);
-            /*foreach (T element in other)
-            {
-                if (Contains(element))
-                    result.RemoveItem(element);
-            }*/
-            //result.Except(other);
             return this.Except(other);
         }
 

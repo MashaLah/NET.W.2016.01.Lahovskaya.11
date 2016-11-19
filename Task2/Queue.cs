@@ -82,7 +82,6 @@ namespace Task2
             size--;
             if (tail == capacity) tail = 0; 
             return element;
-            //return elements[++head % capacity];
         }
 
         /// <summary>
