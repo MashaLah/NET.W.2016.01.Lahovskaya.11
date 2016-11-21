@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Task3
 {
-    public class Set<T> : IEnumerable<T> where T : class, IComparable<T>
+    public class Set<T> : IEnumerable<T> where T : class, IEquatable<T>
     {
         private T[] elements;
         private int capacity;
